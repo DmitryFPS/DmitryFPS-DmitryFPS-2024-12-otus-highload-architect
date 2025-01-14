@@ -4,32 +4,33 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Component;
-
-import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+import javax.crypto.SecretKey;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
+import ru.otus.orlov.constants.NumberConstants;
 
 
 /** Утилита для работы с JSON Web Token (JWT) */
 @Component
 public class JwtUtils {
-
-    /** Одна тысяча */
-    private static final int ONE_THOUSAND = 1000;
-
     /** Секретный ключ для подписи токенов */
     @Value("${jwt.secret}")
     private String secret;
 
     /** Срок действия токенов в миллисекундах */
     @Value("${jwt.expiration}")
-    private Long expiration;
+    private long expiration;
+
+    /** Срок действия рефреш токенов в миллисекундах */
+    @Value("${jwt.expiration.refresh}")
+    private long expirationRefresh;
+
 
     /**
      * Возвращает секретный ключ для подписи токенов
@@ -64,7 +65,7 @@ public class JwtUtils {
                 .setClaims(claims)
                 .setSubject(subject)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + expiration * ONE_THOUSAND))
+                .setExpiration(new Date(System.currentTimeMillis() + expiration * NumberConstants.ONE_THOUSAND))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -102,12 +103,18 @@ public class JwtUtils {
         return extractClaim(token, Claims::getExpiration);
     }
 
+    /** Сгенерировать Refresh Token */
+    public String generateRefreshToken(final UserDetails userDetails) {
+        final Map<String, Object> claims = new HashMap<>();
+        return createRefreshToken(claims, userDetails.getUsername());
+    }
+
     /**
      * Извлекает указанное поле из JWT
      *
      * @param token          JWT
      * @param claimsResolver функция для извлечения поля
-     * @param <T>           тип извлекаемого поля
+     * @param <T>            тип извлекаемого поля
      * @return значение поля
      */
     private <T> T extractClaim(final String token,
@@ -138,5 +145,18 @@ public class JwtUtils {
      */
     private Boolean isTokenExpired(final String token) {
         return extractExpiration(token).before(new Date());
+    }
+
+    /** Создать Refresh Token */
+    private String createRefreshToken(final Map<String, Object> claims,
+                                      final String subject) {
+        return Jwts.builder()
+                .setClaims(claims)
+                .setSubject(subject)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(
+                        new Date(System.currentTimeMillis() + expirationRefresh * NumberConstants.ONE_THOUSAND))
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+                .compact();
     }
 }

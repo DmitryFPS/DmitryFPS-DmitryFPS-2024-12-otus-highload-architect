@@ -17,7 +17,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import ru.otus.orlov.handler.CustomAccessDeniedHandler;
 import ru.otus.orlov.security.JwtRequestFilter;
-import ru.otus.orlov.security.UserDetailsServiceImpl;
 
 
 /** Конфигурация безопасности Spring Security */
@@ -25,10 +24,6 @@ import ru.otus.orlov.security.UserDetailsServiceImpl;
 @EnableWebSecurity
 @Configuration
 public class SecurityConfig {
-
-    /** Сервис для работы с пользователями */
-    private final UserDetailsServiceImpl userDetailsService;
-
     /** Фильтр для обработки запросов, содержащих JWT */
     private final JwtRequestFilter jwtRequestFilter;
 
@@ -50,7 +45,7 @@ public class SecurityConfig {
                         // Разрешает доступ к указанным путям без аутентификации
                         .requestMatchers(
                                 "/authenticate", "/login", "/login-fail", "/logout", "/forbidden",
-                                "/api/v1/login", "/api/v1/user/register"
+                                "/api/v1/login", "/api/v1/user/register", "/api/v1/logout"
                         ).permitAll()
                         // Требует аутентификации для всех остальных запросов
                         .anyRequest()
