@@ -1,6 +1,9 @@
 package ru.otus.orlov.mapper;
 
 
+import java.util.Collections;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
@@ -8,10 +11,6 @@ import org.mapstruct.Named;
 import ru.otus.orlov.dto.UserDto;
 import ru.otus.orlov.entity.Interest;
 import ru.otus.orlov.entity.User;
-
-import java.util.Collections;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /** Маппер для Юзера */
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
