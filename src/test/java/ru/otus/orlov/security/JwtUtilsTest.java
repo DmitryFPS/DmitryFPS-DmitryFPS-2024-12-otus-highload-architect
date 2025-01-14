@@ -29,7 +29,8 @@ class JwtUtilsTest {
 
         // Устанавливаем значения полей через ReflectionTestUtils
         ReflectionTestUtils.setField(jwtUtils, "secret", SECRET);
-        ReflectionTestUtils.setField(jwtUtils, "expiration", 86400L);
+        ReflectionTestUtils.setField(jwtUtils, "expiration", 900L);
+        ReflectionTestUtils.setField(jwtUtils, "expirationRefresh", 1800);
     }
 
     @Test
