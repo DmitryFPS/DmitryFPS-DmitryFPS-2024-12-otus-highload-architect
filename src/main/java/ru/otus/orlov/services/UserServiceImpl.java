@@ -1,5 +1,10 @@
 package ru.otus.orlov.services;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -18,12 +23,6 @@ import ru.otus.orlov.repositories.CityRepository;
 import ru.otus.orlov.repositories.InterestRepository;
 import ru.otus.orlov.repositories.RoleRepository;
 import ru.otus.orlov.repositories.UserRepository;
-
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 
 /**
@@ -119,7 +118,8 @@ public class UserServiceImpl implements UserService {
                 userCreateDto.getEmail(),
                 encodedPassword,
                 getRoles(userCreateDto),
-                Boolean.TRUE
+                Boolean.TRUE,
+                null
         );
         return userMapper.toDto(userRepository.save(userToSave));
     }

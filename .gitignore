@@ -40,3 +40,5 @@ build/
 
 ### Папка с логами ###
 logs
+
+.editorconfig
