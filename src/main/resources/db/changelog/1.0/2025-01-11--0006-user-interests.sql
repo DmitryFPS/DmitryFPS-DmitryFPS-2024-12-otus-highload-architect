@@ -1,5 +1,5 @@
 -- Создание таблицы юзеров и ролей many-to-many
---changeset orlov:2025-01-11--0005-user-interests-table
+--changeset orlov:2025-01-11--0006-user-interests-table
 CREATE TABLE user_interests
 (
     user_id     BIGINT NOT NULL,

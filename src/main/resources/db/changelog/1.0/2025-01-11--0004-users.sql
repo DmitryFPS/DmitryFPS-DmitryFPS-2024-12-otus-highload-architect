@@ -1,6 +1,6 @@
 --liquibase formatted sql
 
---changeset orlov:2025-01-11--0003-users-table
+--changeset orlov:2025-01-11--0004-users-table
 CREATE TYPE gender_enum AS ENUM ('MALE', 'FEMALE');
 
 CREATE TABLE users
@@ -13,7 +13,9 @@ CREATE TABLE users
     email      VARCHAR(30)  NOT NULL UNIQUE,
     password   VARCHAR(100) NOT NULL,
     is_active  BOOLEAN DEFAULT TRUE,
-    city_id    BIGINT,
+    city_id    BIGINT       NOT NULL,
+    token_id   BIGINT,
 
-    CONSTRAINT fk_city FOREIGN KEY (city_id) REFERENCES cities (id)
+    CONSTRAINT fk_city FOREIGN KEY (city_id) REFERENCES cities (id),
+    CONSTRAINT fk_token FOREIGN KEY (token_id) REFERENCES tokens (id)
 );
