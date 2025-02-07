@@ -15,7 +15,13 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedAttributeNode;
 import jakarta.persistence.NamedEntityGraph;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,12 +35,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import ru.otus.orlov.customers.Gender;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 
 /** Сущность пользователя, представляющая информацию о пользователях в системе */
 @Setter
@@ -44,10 +44,10 @@ import java.util.stream.Collectors;
 @Entity
 @Table(name = "users")
 @NamedEntityGraph(name = "city-entity-graph", attributeNodes = {@NamedAttributeNode("city")})
-@NamedEntityGraph(name = "city-roles-interests-entity-graph",
-        attributeNodes = {@NamedAttributeNode("city"), @NamedAttributeNode("roles"), @NamedAttributeNode("interests")})
+@NamedEntityGraph(name = "city-roles-interests-token-entity-graph",
+        attributeNodes = {@NamedAttributeNode("city"), @NamedAttributeNode("roles"),
+                @NamedAttributeNode("interests"), @NamedAttributeNode("token")})
 public class User implements UserDetails {
-
     /** Идентификатор пользователя */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -87,7 +87,7 @@ public class User implements UserDetails {
     private City city;
 
     /** Email пользователя */
-    @Column(name = "email", nullable = false, unique = true, length = 30)
+    @Column(name = "email", nullable = false, unique = true, length = 100)
     private String email;
 
     /** Пароль пользователя */
@@ -107,6 +107,11 @@ public class User implements UserDetails {
     /** Активный ли пользователь */
     @Column(name = "is_active", columnDefinition = "boolean default true")
     private Boolean isActive = Boolean.TRUE;
+
+    /** Токен, связанный с пользователем */
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "token_id", referencedColumnName = "id")
+    private Token token;
 
 
     /** Роли для авторизации */

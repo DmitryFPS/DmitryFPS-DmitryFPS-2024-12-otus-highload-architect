@@ -8,8 +8,7 @@ public enum Gender {
     MALE,
 
     /** Женский пол */
-    FEMALE
-    ;
+    FEMALE;
 
     /**
      * Метод для преобразования строки в значение enum Gender

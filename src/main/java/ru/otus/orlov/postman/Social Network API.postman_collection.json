@@ -7,7 +7,7 @@
 	},
 	"item": [
 		{
-			"name": "http://localhost:8080/api/v1/login",
+			"name": "login",
 			"request": {
 				"auth": {
 					"type": "noauth"
@@ -40,7 +40,7 @@
 			"response": []
 		},
 		{
-			"name": "http://localhost:8080/api/v1/user/1",
+			"name": "getUser",
 			"event": [
 				{
 					"listen": "test",
@@ -62,7 +62,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkZGQxMkBtYWlsLnJ1IiwiaWF0IjoxNzM2NzI1MDc3LCJleHAiOjE3MzY4MTE0Nzd9.60rE-0viL19jPj-uHo7rSjo3AR6aHXWbfPhtNngzMRY",
+							"value": "",
 							"type": "string"
 						}
 					]
@@ -96,7 +96,7 @@
 			"response": []
 		},
 		{
-			"name": "http://localhost:8080/api/v1/user/register",
+			"name": "register",
 			"request": {
 				"auth": {
 					"type": "noauth"
@@ -124,6 +124,79 @@
 						"v1",
 						"user",
 						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "refresh",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"refreshToken\": \"\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/refresh",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"refresh"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "logout",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"ddd12@mail.ru\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/logout",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"logout"
 					]
 				}
 			},

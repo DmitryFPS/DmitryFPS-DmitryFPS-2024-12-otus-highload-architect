@@ -1,11 +1,10 @@
 package ru.otus.orlov.dto;
 
+import java.util.Date;
+import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 import ru.otus.orlov.customers.Gender;
-
-import java.util.Date;
-import java.util.Set;
 
 /**
  * Класс, представляющий DTO (Data Transfer Object) для передачи данных о пользователе.

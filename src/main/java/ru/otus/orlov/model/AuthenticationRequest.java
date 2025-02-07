@@ -1,12 +1,10 @@
 package ru.otus.orlov.model;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 
 /** Запрос на аутентификацию, содержащий имя пользователя и пароль */
-@Getter
-@Setter
+@Data
 public class AuthenticationRequest {
 
     /** Наименование юзера */

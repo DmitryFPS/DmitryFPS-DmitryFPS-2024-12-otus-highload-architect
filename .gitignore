@@ -40,3 +40,8 @@ build/
 
 ### Папка с логами ###
 logs
+
+.editorconfig
+
+# Тестовая схема
+src/main/resources/db/changelog/scheme/*
