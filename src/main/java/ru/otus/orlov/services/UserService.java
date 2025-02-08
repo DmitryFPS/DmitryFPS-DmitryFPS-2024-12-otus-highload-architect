@@ -1,7 +1,9 @@
 package ru.otus.orlov.services;
 
+import java.util.List;
 import ru.otus.orlov.dto.UserCreateDto;
 import ru.otus.orlov.dto.UserDto;
+import ru.otus.orlov.entity.User;
 
 /**
  * Сервис для работы с пользователями.
@@ -29,4 +31,12 @@ public interface UserService {
      * @return объект {@link UserDto}, содержащий данные созданного пользователя
      */
     UserDto create(final UserCreateDto userCreateDto);
+
+    /**
+     * Ищет пользователей по префиксу имени и фамилии.
+     * Делегирует вызов репозиторию для выполнения поиска в базе данных.
+     *
+     * @return список пользователей, удовлетворяющих условиям поиска.
+     */
+    List<User> searchUsersByFirstNameAndLastName(final String firstName, final String lastName);
 }

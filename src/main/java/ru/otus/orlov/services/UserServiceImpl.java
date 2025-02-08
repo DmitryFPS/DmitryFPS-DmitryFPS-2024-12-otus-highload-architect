@@ -125,6 +125,18 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
+     * Реализация метода поиска пользователей по префиксу имени и фамилии.
+     * Использует репозиторий для выполнения запроса к базе данных.
+     *
+     * @return список пользователей, удовлетворяющих условиям поиска.
+     */
+    @Transactional(readOnly = true)
+    @Override
+    public List<User> searchUsersByFirstNameAndLastName(final String firstName, final String lastName) {
+        return userRepository.findByFirstNameAndLastName(firstName, lastName);
+    }
+
+    /**
      * Получает или создает интересы на основе их описаний.
      *
      * @param descriptions набор описаний интересов

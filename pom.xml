@@ -217,6 +217,9 @@
                     <!-- Исключаю папку target для checkstyle иначе задолбает -->
                     <configLocation>${checkstyle.config.url}</configLocation>
                     <excludeGeneratedSources>true</excludeGeneratedSources>
+                    <excludes>
+                        **/ru/otus/orlov/util/GenerateCSV.java
+                    </excludes>
                 </configuration>
                 <executions>
                     <execution>

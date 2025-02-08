@@ -1,6 +1,7 @@
 # Учебный проект: Социальная сеть
 
-Этот проект представляет собой учебное приложение социальной сети, разработанное с использованием современных технологий. Весь стек технологий можно узнать в файле `pom.xml`.
+Этот проект представляет собой учебное приложение социальной сети, разработанное с использованием современных
+технологий. Весь стек технологий можно узнать в файле `pom.xml`.
 
 ---
 
@@ -20,7 +21,8 @@
       Пример: `86400` (24 часа).
     - **JWT_SECRET**: Секретный ключ для генерации JWT.  
       Пример: `+AVVLHD+9HxbBZYQmEnnuwisUGzW/m89H7i5FMkHEqE=`.  
-      Вы можете использовать этот ключ или сгенерировать свой с помощью теста `SecretKeyGeneratorTest` (алгоритм HMAC-SHA256).
+      Вы можете использовать этот ключ или сгенерировать свой с помощью теста `SecretKeyGeneratorTest` (алгоритм
+      HMAC-SHA256).
     - **PASSWORD_BD**: Пароль для подключения к базе данных.  
       Пример: `root`.
     - **USER_NAME_BD**: Имя пользователя для подключения к базе данных.  
@@ -37,9 +39,11 @@ docker compose up -d
 ```
 
 Этот скрипт выполняет следующие действия:
+
 - Поднимает **PostgreSQL** (база данных).
 - Собирает приложение в Docker-контейнер (в разработке, контейнер может падать).
 - Теперь запускаем приложение жмякаем run
+
 ---
 
 ## Работа с приложением через Postman
@@ -153,9 +157,40 @@ docker compose up -d
 
 ---
 
-## Лицензия
+## Генерация 1_000_000 анкет
 
-Этот проект является учебным и распространяется под лицензией MIT. Подробности см. в файле `LICENSE`.
+- Запускаем GenerateCSV будет сгенерированы 3 файла в /resources/migration
+  users.csv, user_roles.csv, user_interests.csv
+- Можно на уникальность проверить csv
+    - sort users.csv | uniq -d
+    - sort user_roles.csv | uniq -d
+    - sort user_interests.csv | uniq -d
+- Далее запускаем приложение и они сгенерирует начальные схемы
+- Далее запускаем docker-compose.yml
+- Заходим в контейнер docker exec -it CONTAINER ID bash
+- Заходим в psql -h postgres -p 5432 -U root -d db (По просьбе вводим пароль от БД 'root')
+- Проверяем что находимся там где нужно Пример одной схемы \dt public.users
+- Выполняем быструю вставку больших объемов данных:
+    - \copy users (first_name, last_name, birth_date, gender, email, password, is_active, city_id) FROM '/data/users.csv'
+      WITH (FORMAT csv, HEADER);
+    - \copy user_roles (user_id, role_id) FROM '/data/user_roles.csv' WITH (FORMAT csv, HEADER);
+    - \copy user_interests (user_id, interest_id) FROM '/data/user_interests.csv' WITH (FORMAT csv, HEADER);
+- Идем в БД и проверяем что все хорошо
+
+## Проверка, что в файлах полное кол-во данных (IDEA почему то не всегда показывает больше 12 000 строк)
+
+- wc -l users.csv
+- wc -l user_interests.csv
+- wc -l user_roles.csv
+
+## Для нагрузочного тестирования поиска анкет по префиксу имени и фамилии (одновременно)
+
+- Запрос в форме firstName LIKE ? and secondName LIKE ?
+- Сортировать вывод по id анкеты
+- GET /user/search?first_name=Конст&last_name=Оси
+
+## Отчет по тестированию производительности запросов до и после добавления индексов
+[Отчет: ](./src/main/java/ru/otus/orlov/docs/loadtestingreport/report.md)
 
 ---
 

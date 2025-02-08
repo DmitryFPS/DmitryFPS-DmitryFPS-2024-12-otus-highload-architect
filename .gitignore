@@ -44,4 +44,4 @@ logs
 .editorconfig
 
 # Тестовая схема
-src/main/resources/db/changelog/scheme/*
+src/main/resources/migration/
