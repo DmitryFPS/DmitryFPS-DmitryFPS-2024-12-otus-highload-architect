@@ -1,2 +1,2 @@
 timeStamp,elapsed,label,responseCode,responseMessage,threadName,dataType,success,failureMessage,bytes,sentBytes,grpThreads,allThreads,URL,Latency,IdleTime,Connect
-1739052782621,112,HTTP Request,200,,Нагрузочное тестирование User Thread Group 1-1,text,true,,13884,342,1,1,http://localhost:8080/api/v1/user/search?first_name=Fi&last_name=Co,111,0,0
+1739641841525,85,HTTP Request,200,,Нагрузочное тестирование User Thread Group 1-1,text,true,,18893,340,1,1,http://localhost:8080/api/v1/user/search?first_name=Fi&last_name=Co,85,0,1

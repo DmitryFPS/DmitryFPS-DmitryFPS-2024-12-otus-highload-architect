@@ -31,5 +31,13 @@ CREATE INDEX idx_users_gender ON users (gender);
 -- Составной индекс для gender и is_active
 CREATE INDEX idx_users_gender_is_active ON users (gender, is_active);
 
--- Составной индекс
+-- Обычный составной индекс (без varchar_pattern_ops)
 CREATE INDEX idx_users_firstname_lastname ON users (first_name, last_name);
+
+-- Индексы для оптимизации LIKE по префиксу (отдельные поля)
+CREATE INDEX idx_users_first_name_pattern ON users (first_name varchar_pattern_ops);
+CREATE INDEX idx_users_last_name_pattern ON users (last_name varchar_pattern_ops);
+
+-- Составной индекс для оптимизации LIKE по префиксу (оба поля)
+CREATE INDEX idx_users_firstname_lastname_pattern ON users
+    (first_name varchar_pattern_ops, last_name varchar_pattern_ops);

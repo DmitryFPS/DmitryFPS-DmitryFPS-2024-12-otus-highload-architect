@@ -1,11 +1,11 @@
 timeStamp,elapsed,label,responseCode,responseMessage,threadName,dataType,success,failureMessage,bytes,sentBytes,grpThreads,allThreads,URL,Latency,IdleTime,Connect
-1739052874797,80,HTTP Request,200,,Нагрузочное тестирование User Thread Group 1-1,text,true,,13884,342,1,1,http://localhost:8080/api/v1/user/search?first_name=Fi&last_name=Co,79,0,0
-1739052874900,56,HTTP Request,200,,Нагрузочное тестирование User Thread Group 1-2,text,true,,13884,342,1,1,http://localhost:8080/api/v1/user/search?first_name=Fi&last_name=Co,56,0,1
-1739052874997,56,HTTP Request,200,,Нагрузочное тестирование User Thread Group 1-3,text,true,,13884,342,1,1,http://localhost:8080/api/v1/user/search?first_name=Fi&last_name=Co,56,0,1
-1739052875101,57,HTTP Request,200,,Нагрузочное тестирование User Thread Group 1-4,text,true,,13884,342,1,1,http://localhost:8080/api/v1/user/search?first_name=Fi&last_name=Co,56,0,1
-1739052875201,62,HTTP Request,200,,Нагрузочное тестирование User Thread Group 1-5,text,true,,13884,342,1,1,http://localhost:8080/api/v1/user/search?first_name=Fi&last_name=Co,62,0,1
-1739052875301,56,HTTP Request,200,,Нагрузочное тестирование User Thread Group 1-6,text,true,,13884,342,1,1,http://localhost:8080/api/v1/user/search?first_name=Fi&last_name=Co,56,0,1
-1739052875400,55,HTTP Request,200,,Нагрузочное тестирование User Thread Group 1-7,text,true,,13884,342,1,1,http://localhost:8080/api/v1/user/search?first_name=Fi&last_name=Co,55,0,1
-1739052875501,46,HTTP Request,200,,Нагрузочное тестирование User Thread Group 1-8,text,true,,13884,342,1,1,http://localhost:8080/api/v1/user/search?first_name=Fi&last_name=Co,46,0,1
-1739052875601,61,HTTP Request,200,,Нагрузочное тестирование User Thread Group 1-9,text,true,,13884,342,1,1,http://localhost:8080/api/v1/user/search?first_name=Fi&last_name=Co,61,0,1
-1739052875701,56,HTTP Request,200,,Нагрузочное тестирование User Thread Group 1-10,text,true,,13884,342,1,1,http://localhost:8080/api/v1/user/search?first_name=Fi&last_name=Co,56,0,1
+1739641964559,37,HTTP Request,200,,Нагрузочное тестирование User Thread Group 1-1,text,true,,18893,340,1,1,http://localhost:8080/api/v1/user/search?first_name=Fi&last_name=Co,37,0,1
+1739641964664,32,HTTP Request,200,,Нагрузочное тестирование User Thread Group 1-2,text,true,,18893,340,1,1,http://localhost:8080/api/v1/user/search?first_name=Fi&last_name=Co,31,0,1
+1739641964763,42,HTTP Request,200,,Нагрузочное тестирование User Thread Group 1-3,text,true,,18893,340,1,1,http://localhost:8080/api/v1/user/search?first_name=Fi&last_name=Co,41,0,1
+1739641964861,32,HTTP Request,200,,Нагрузочное тестирование User Thread Group 1-4,text,true,,18893,340,1,1,http://localhost:8080/api/v1/user/search?first_name=Fi&last_name=Co,32,0,1
+1739641964964,35,HTTP Request,200,,Нагрузочное тестирование User Thread Group 1-5,text,true,,18893,340,1,1,http://localhost:8080/api/v1/user/search?first_name=Fi&last_name=Co,35,0,2
+1739641965064,28,HTTP Request,200,,Нагрузочное тестирование User Thread Group 1-6,text,true,,18893,340,1,1,http://localhost:8080/api/v1/user/search?first_name=Fi&last_name=Co,28,0,1
+1739641965160,33,HTTP Request,200,,Нагрузочное тестирование User Thread Group 1-7,text,true,,18893,340,1,1,http://localhost:8080/api/v1/user/search?first_name=Fi&last_name=Co,32,0,1
+1739641965265,38,HTTP Request,200,,Нагрузочное тестирование User Thread Group 1-8,text,true,,18893,340,1,1,http://localhost:8080/api/v1/user/search?first_name=Fi&last_name=Co,37,0,1
+1739641965360,20,HTTP Request,200,,Нагрузочное тестирование User Thread Group 1-9,text,true,,18893,340,1,1,http://localhost:8080/api/v1/user/search?first_name=Fi&last_name=Co,20,0,0
+1739641965460,24,HTTP Request,200,,Нагрузочное тестирование User Thread Group 1-10,text,true,,18893,340,1,1,http://localhost:8080/api/v1/user/search?first_name=Fi&last_name=Co,24,0,1
