@@ -16,8 +16,5 @@ FROM eclipse-temurin:17-jdk
 # Копируем JAR-файл приложения
 COPY --from=build-stage /usr/orlov/target/social-network.jar /app/my-app.jar
 
-# Объявляем, что контейнер будет слушать порт 8080
-EXPOSE 8080
-
 # Указываем команду, которая будет выполнена при запуске контейнера
 ENTRYPOINT ["sh", "-c", "exec java -jar /app/my-app.jar"]

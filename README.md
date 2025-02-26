@@ -194,4 +194,7 @@ docker compose up -d
 
 ---
 
+# Репликация
+[Отчет: ](src/main/java/ru/otus/orlov/docs/replication/report.md)
+
 Если у вас есть вопросы или предложения, пожалуйста, создайте issue или свяжитесь с автором проекта.
