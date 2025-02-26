@@ -20,20 +20,24 @@ CREATE TABLE users
     CONSTRAINT fk_token FOREIGN KEY (token_id) REFERENCES tokens (id)
 );
 
--- -- Индексы для внешних ключей
--- CREATE INDEX idx_users_city_id ON users (city_id);
--- CREATE INDEX idx_users_token_id ON users (token_id);
---
--- -- Индексы для фильтрации
--- CREATE INDEX idx_users_is_active ON users (is_active);
--- CREATE INDEX idx_users_gender ON users (gender);
---
--- -- Составной индекс для gender и is_active
--- CREATE INDEX idx_users_gender_is_active ON users (gender, is_active);
---
--- -- Индексы для поиска по имени и фамилии
--- CREATE INDEX idx_users_first_name ON users (first_name);
--- CREATE INDEX idx_users_last_name ON users (last_name);
---
--- -- Индекс для сортировки по дате рождения
--- CREATE INDEX idx_users_birth_date ON users (birth_date);
+-- Индексы для внешних ключей
+CREATE INDEX idx_users_city_id ON users (city_id);
+CREATE INDEX idx_users_token_id ON users (token_id);
+
+-- Индексы для фильтрации
+CREATE INDEX idx_users_is_active ON users (is_active);
+CREATE INDEX idx_users_gender ON users (gender);
+
+-- Составной индекс для gender и is_active
+CREATE INDEX idx_users_gender_is_active ON users (gender, is_active);
+
+-- Обычный составной индекс (без varchar_pattern_ops)
+CREATE INDEX idx_users_firstname_lastname ON users (first_name, last_name);
+
+-- Индексы для оптимизации LIKE по префиксу (отдельные поля)
+CREATE INDEX idx_users_first_name_pattern ON users (first_name varchar_pattern_ops);
+CREATE INDEX idx_users_last_name_pattern ON users (last_name varchar_pattern_ops);
+
+-- Составной индекс для оптимизации LIKE по префиксу (оба поля)
+CREATE INDEX idx_users_firstname_lastname_pattern ON users
+    (first_name varchar_pattern_ops, last_name varchar_pattern_ops);
