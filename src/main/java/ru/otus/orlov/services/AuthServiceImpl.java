@@ -76,7 +76,7 @@ public class AuthServiceImpl implements AuthService {
         // Время протухания рефреш токена
         final Date refreshTokenExpiration = jwtUtils.extractExpiration(refreshToken);
         // Сохранение Refresh Token в БД
-        final User user = userRepository.findByEmail(email)
+        final User user = userRepository.findWithTokenByEmail(email)
                 .orElseThrow(() ->
                         new UsernameNotFoundException("Пользователь с email %s не найден".formatted(email)));
         final Token token = ofNullable(user.getToken()).orElseGet(Token::new);
@@ -101,7 +101,7 @@ public class AuthServiceImpl implements AuthService {
         final String email = jwtUtils.extractUsername(refreshToken);
 
         // Поиск пользователя в БД
-        final User user = userRepository.findByEmail(email)
+        final User user = userRepository.findWithTokenByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("Пользователь с email %s не найден".formatted(email)));
         final Token token = user.getToken();
         // Проверка, что Refresh Token валиден и совпадает с сохраненным в БД
@@ -129,7 +129,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public void logout(final LogoutRequest logoutRequest) {
         final String email = logoutRequest.getEmail();
-        final User user = userRepository.findByEmail(logoutRequest.getEmail())
+        final User user = userRepository.findWithTokenByEmail(logoutRequest.getEmail())
                 .orElseThrow(() -> new UsernameNotFoundException("Пользователь с email %s не найден".formatted(email)));
         final Token token = user.getToken();
         // Удаляем токен из БД

@@ -48,3 +48,4 @@ src/main/resources/migration/*
 src/main/resources/data/prometheus/data/*
 data/*
 src/main/resources/nginx/logs
+volumes

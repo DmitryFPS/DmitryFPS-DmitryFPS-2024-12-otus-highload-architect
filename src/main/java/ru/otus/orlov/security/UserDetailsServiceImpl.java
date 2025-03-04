@@ -1,6 +1,7 @@
 package ru.otus.orlov.security;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -41,6 +42,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(final String email) throws UsernameNotFoundException {
         return userRepository.findByEmail(email)
+                .map(item -> {
+                    return new User(
+                            item.getEmail(),
+                            item.getPassword(),
+                            item.getAuthorities());
+                })
                 .orElseThrow(() ->
                         new UsernameNotFoundException("Пользователь с email %s не найден".formatted(email)));
     }

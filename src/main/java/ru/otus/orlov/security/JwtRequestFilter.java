@@ -17,7 +17,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import ru.otus.orlov.constants.TextConstants;
 import ru.otus.orlov.entity.Token;
-import ru.otus.orlov.entity.User;
 import ru.otus.orlov.repositories.UserRepository;
 
 /** Фильтр для обработки запросов, содержащих JWT */
@@ -86,10 +85,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     /** Валиден ли токен */
     private boolean isTokenValid(final String jwt, final UserDetails userDetails) {
-        final User user = userRepository.findByEmail(userDetails.getUsername())
+        final Token token = userRepository.findTokenByUserEmail(userDetails.getUsername())
                 .orElseThrow(() -> new UsernameNotFoundException(
                         "Пользователь с email %s не найден".formatted(userDetails.getUsername())));
-        final Token token = user.getToken();
 
         return token.getAccessTokenExpiration() != null
                 && !token.getAccessTokenExpiration().isBefore(LocalDateTime.now())
@@ -98,9 +96,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     /** Валиден ли Рефреш Токен */
     private boolean isRefreshTokenValid(final String email) {
-        final User user = userRepository.findByEmail(email)
+        final Token token = userRepository.findTokenByUserEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("Пользователь с email %s не найден".formatted(email)));
-        final Token token = user.getToken();
 
         return token.getRefreshToken() != null
                 && token.getRefreshTokenExpiration() != null

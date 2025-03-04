@@ -15,6 +15,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedAttributeNode;
 import jakarta.persistence.NamedEntityGraph;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.util.Collection;
@@ -44,9 +45,12 @@ import ru.otus.orlov.customers.Gender;
 @Entity
 @Table(name = "users")
 @NamedEntityGraph(name = "city-entity-graph", attributeNodes = {@NamedAttributeNode("city")})
-@NamedEntityGraph(name = "city-roles-interests-token-entity-graph",
+@NamedEntityGraph(name = "roles-entity-graph", attributeNodes = {@NamedAttributeNode("roles")})
+@NamedEntityGraph(name = "token-entity-graph", attributeNodes = {@NamedAttributeNode("token")})
+@NamedEntityGraph(name = "city-roles-interests-token-friends-posts-friends-entity-graph",
         attributeNodes = {@NamedAttributeNode("city"), @NamedAttributeNode("roles"),
-                @NamedAttributeNode("interests"), @NamedAttributeNode("token")})
+                @NamedAttributeNode("interests"), @NamedAttributeNode("token"),
+                @NamedAttributeNode("posts"), @NamedAttributeNode("friends")})
 public class User implements UserDetails {
     /** Идентификатор пользователя */
     @Id
@@ -112,6 +116,20 @@ public class User implements UserDetails {
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "token_id", referencedColumnName = "id")
     private Token token;
+
+    @Fetch(FetchMode.SUBSELECT)
+    @OneToMany(targetEntity = Post.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "user_id")
+    private Set<Post> posts = new HashSet<>();
+
+    @Fetch(FetchMode.SUBSELECT)
+    @ManyToMany(targetEntity = User.class, fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JoinTable(
+            name = "user_friends",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "friend_id")
+    )
+    private Set<User> friends = new HashSet<>();
 
 
     /** Роли для авторизации */

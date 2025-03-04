@@ -1,9 +1,13 @@
 spring:
   datasource:
-    url: jdbc:postgresql://pgmaster:5432/postgres
+    url: jdbc:postgresql://localhost:5432/postgres
     driver-class-name: org.postgresql.Driver
     username: postgres
     password: pass
+  cache:
+    type: caffeine # in memory cache
+    caffeine:
+      spec: maximumSize=1000,expireAfterWrite=1m
   sql:
     init:
       mode: never
@@ -20,6 +24,12 @@ spring:
   liquibase:
     enabled: true
     change-log: classpath:db/changelog/db.changelog-master.yaml
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: /
 management:
   endpoints:
     web:

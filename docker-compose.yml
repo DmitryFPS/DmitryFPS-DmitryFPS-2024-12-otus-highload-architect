@@ -1,6 +1,7 @@
 services:
   postgres:
     image: "postgres:13"
+    container_name: postgres
     ports:
       - "5432:5432"
     environment:
@@ -9,3 +10,18 @@ services:
       - POSTGRES_DB=db
     volumes:
       - ./src/main/resources/migration:/data
+
+  rabbitmq:
+    image: "rabbitmq:3.12-management"
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
+volumes:
+  rabbitmq_data:
