@@ -45,7 +45,7 @@ public class SecurityConfig {
                         // Разрешает доступ к указанным путям без аутентификации
                         .requestMatchers(
                                 "/authenticate", "/login", "/login-fail", "/logout", "/forbidden",
-                                "/api/v1/login", "/api/v1/user/register", "/api/v1/logout"
+                                "/api/v1/login", "/api/v1/user/register", "/api/v1/logout", "/actuator/**"
                         ).permitAll()
                         // Требует аутентификации для всех остальных запросов
                         .anyRequest()

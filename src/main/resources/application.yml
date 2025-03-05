@@ -1,9 +1,9 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/db
+    url: jdbc:postgresql://pgmaster:5432/postgres
     driver-class-name: org.postgresql.Driver
-    username: ${USER_NAME_BD}
-    password: ${PASSWORD_BD}
+    username: postgres
+    password: pass
   sql:
     init:
       mode: never
@@ -20,5 +20,17 @@ spring:
   liquibase:
     enabled: true
     change-log: classpath:db/changelog/db.changelog-master.yaml
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus,health,metrics  # Включение нужных endpoint'ов
+      base-path: /actuator  # Базовый путь для Actuator (по умолчанию /actuator)
+  metrics:
+    tags:
+      application: my-app  # Добавление тегов к метрикам
+  endpoint:
+    prometheus:
+      enabled: true  # Явное включение endpoint'а Prometheus
 logging:
   config: classpath:logback.xml

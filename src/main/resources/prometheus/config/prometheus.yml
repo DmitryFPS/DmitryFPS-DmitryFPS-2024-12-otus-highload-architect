@@ -1,0 +1,27 @@
+global:
+  scrape_interval: 15s  # Интервал сбора метрик
+  evaluation_interval: 15s  # Интервал оценки правил
+  external_labels:
+    monitor: 'my-project'  # Метки для всех метрик
+
+rule_files:
+# - "alert.rules"  # Файлы с правилами алертинга (если нужны)
+# - "first.rules"
+# - "second.rules"
+
+scrape_configs:
+  - job_name: 'prometheus'  # Мониторинг самого Prometheus
+    static_configs:
+      - targets: [ 'localhost:9090' ]
+
+  - job_name: 'node-exporter'  # Мониторинг уровня хоста
+    static_configs:
+      - targets: [ 'node-exporter:9100' ]
+
+  - job_name: 'nginx-exporter'  # Мониторинг Nginx
+    static_configs:
+      - targets: [ 'nginx-exporter:9113' ]
+
+  - job_name: 'docker-stats'
+    static_configs:
+      - targets: [ 'cadvisor:8080' ]
