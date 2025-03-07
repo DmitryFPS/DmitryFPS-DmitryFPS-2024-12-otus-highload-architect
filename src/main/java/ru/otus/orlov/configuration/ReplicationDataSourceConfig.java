@@ -21,6 +21,12 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
+/**
+ * Конфигурационный класс для настройки репликации данных между мастером и слейвами.
+ * Этот класс управляет источниками данных для операций чтения и записи, а также
+ * автоматически выбирает слейв с наименьшей задержкой для операций чтения.
+ * Также включает периодическое обновление задержек и логирование статистики пула соединений.
+ */
 @Slf4j
 @Configuration
 @EnableScheduling
@@ -28,6 +34,12 @@ public class ReplicationDataSourceConfig {
     // Мапа для хранения задержек каждого слейва
     private final Map<String, Long> latencyMap = new ConcurrentHashMap<>();
 
+    /**
+     * Основной бин DataSource, который использует LazyConnectionDataSourceProxy
+     * для ленивой инициализации соединений.
+     *
+     * @return Прокси для DataSource.
+     */
     @Primary
     @Bean
     @DependsOn({"writeDataSource", "readDataSource1", "readDataSource2", "routingDataSource"})
@@ -35,6 +47,11 @@ public class ReplicationDataSourceConfig {
         return new LazyConnectionDataSourceProxy(routingDataSource());
     }
 
+    /**
+     * Создает и возвращает DataSource с маршрутизацией между мастером и слейвами.
+     *
+     * @return DataSource с маршрутизацией.
+     */
     @Bean
     public DataSource routingDataSource() {
         final AbstractRoutingDataSource routingDataSource = new AbstractRoutingDataSource() {
@@ -61,6 +78,12 @@ public class ReplicationDataSourceConfig {
         return routingDataSource;
     }
 
+    /**
+     * Создает и возвращает бин SpringLiquibase для управления миграциями базы данных.
+     *
+     * @param dataSource Источник данных для Liquibase.
+     * @return Объект SpringLiquibase.
+     */
     @Bean
     public SpringLiquibase liquibase(final DataSource dataSource) {
         final SpringLiquibase liquibase = new SpringLiquibase();
@@ -69,7 +92,11 @@ public class ReplicationDataSourceConfig {
         return liquibase;
     }
 
-    /** Выбирает слейв с наименьшей задержкой. */
+    /**
+     * Выбирает слейв с наименьшей задержкой.
+     *
+     * @return Ключ слейва с наименьшей задержкой.
+     */
     private String determineBestReadDataSource() {
         long minLatency = Long.MAX_VALUE;
         String bestDataSource = "read1";
@@ -84,15 +111,23 @@ public class ReplicationDataSourceConfig {
         return bestDataSource;
     }
 
-    /** Периодически обновляет задержки для каждого слейва. */
-    @Scheduled(fixedRate = 5000) // Обновляем каждые 5 секунд
+    /**
+     * Периодически обновляет задержки для каждого слейва.
+     * Выполняется каждые 5 секунд.
+     */
+    @Scheduled(fixedRate = 5000)
     public void updateLatencies() {
         latencyMap.put("read1", measureLatency(readDataSource1()));
         latencyMap.put("read2", measureLatency(readDataSource2()));
         log.info("Updated latencies: {}", latencyMap);
     }
 
-    /** Измеряет задержку для указанного источника данных. */
+    /**
+     * Измеряет задержку для указанного источника данных.
+     *
+     * @param dataSource Источник данных для измерения задержки.
+     * @return Задержка в миллисекундах.
+     */
     private long measureLatency(final DataSource dataSource) {
         long startTime = System.currentTimeMillis();
         try (final Connection connection = dataSource.getConnection();
@@ -105,48 +140,64 @@ public class ReplicationDataSourceConfig {
         return System.currentTimeMillis() - startTime;
     }
 
-    /** Мастер-источник данных для операций записи. */
+    /**
+     * Создает и возвращает мастер-источник данных для операций записи.
+     *
+     * @return Мастер-источник данных.
+     */
     @Bean
     public DataSource writeDataSource() {
         final HikariDataSource dataSource = new HikariDataSource();
-        dataSource.setJdbcUrl("jdbc:postgresql://pgmaster:5432/postgres");
+        dataSource.setJdbcUrl("jdbc:postgresql://localhost:5432/postgres");
         dataSource.setUsername("postgres");
         dataSource.setPassword("pass");
         dataSource.setMaximumPoolSize(1000);
         dataSource.setIdleTimeout(30000);
         dataSource.setMaxLifetime(1800000);
-        dataSource.setLeakDetectionThreshold(5000);
+        dataSource.setLeakDetectionThreshold(10000);
         return dataSource;
     }
 
-    /** Первый слейв-источник данных для операций чтения. */
+    /**
+     * Создает и возвращает первый слейв-источник данных для операций чтения.
+     *
+     * @return Первый слейв-источник данных.
+     */
     @Bean
     public DataSource readDataSource1() {
         final HikariDataSource dataSource = new HikariDataSource();
-        dataSource.setJdbcUrl("jdbc:postgresql://pgslave:5432/postgres");
+        dataSource.setJdbcUrl("jdbc:postgresql://localhost:15432/postgres");
         dataSource.setUsername("postgres");
         dataSource.setPassword("pass");
         dataSource.setMaximumPoolSize(1000);
         dataSource.setIdleTimeout(30000);
         dataSource.setMaxLifetime(1800000);
-        dataSource.setLeakDetectionThreshold(5000);
+        dataSource.setLeakDetectionThreshold(10000);
         return dataSource;
     }
 
-    /** Второй слейв-источник данных для операций чтения */
+    /**
+     * Создает и возвращает второй слейв-источник данных для операций чтения.
+     *
+     * @return Второй слейв-источник данных.
+     */
     @Bean
     public DataSource readDataSource2() {
         final HikariDataSource dataSource = new HikariDataSource();
-        dataSource.setJdbcUrl("jdbc:postgresql://pgasyncslave:5432/postgres");
+        dataSource.setJdbcUrl("jdbc:postgresql://localhost:25432/postgres");
         dataSource.setUsername("postgres");
         dataSource.setPassword("pass");
         dataSource.setMaximumPoolSize(1000);
         dataSource.setIdleTimeout(30000);
         dataSource.setMaxLifetime(1800000);
-        dataSource.setLeakDetectionThreshold(5000);
+        dataSource.setLeakDetectionThreshold(10000);
         return dataSource;
     }
 
+    /**
+     * Периодически логирует статистику пула соединений для каждого источника данных.
+     * Выполняется каждую минуту.
+     */
     @Scheduled(fixedRate = 60000)
     public void logConnectionPoolStats() {
         log.info("Write DataSource stats: {}", ((HikariDataSource) writeDataSource()).getHikariPoolMXBean());
@@ -154,10 +205,17 @@ public class ReplicationDataSourceConfig {
         log.info("Read DataSource 2 stats: {}", ((HikariDataSource) readDataSource2()).getHikariPoolMXBean());
     }
 
+    /**
+     * Закрывает все пулы соединений при уничтожении бина.
+     */
     @PreDestroy
     public void closeDataSources() {
-        ((HikariDataSource) writeDataSource()).close();
-        ((HikariDataSource) readDataSource1()).close();
-        ((HikariDataSource) readDataSource2()).close();
+        try {
+            ((HikariDataSource) writeDataSource()).close();
+            ((HikariDataSource) readDataSource1()).close();
+            ((HikariDataSource) readDataSource2()).close();
+        } catch (Exception e) {
+            log.error("Ошибка при закрытии пулов соединений", e);
+        }
     }
 }

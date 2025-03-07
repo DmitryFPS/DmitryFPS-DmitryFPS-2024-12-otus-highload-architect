@@ -119,6 +119,8 @@ public class UserServiceImpl implements UserService {
                 encodedPassword,
                 getRoles(userCreateDto),
                 Boolean.TRUE,
+                null,
+                null,
                 null
         );
         return userMapper.toDto(userRepository.save(userToSave));

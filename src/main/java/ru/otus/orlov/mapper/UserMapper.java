@@ -23,6 +23,7 @@ public interface UserMapper {
      */
     @Mapping(target = "city", source = "city.name")
     @Mapping(target = "interests", source = "interests", qualifiedByName = "mapInterests")
+    @Mapping(target = "friendIds", source = "friends", qualifiedByName = "mapFriends")
     UserDto toDto(final User user);
 
     /**
@@ -38,6 +39,22 @@ public interface UserMapper {
         }
         return interests.stream()
                 .map(Interest::getDescription)
+                .collect(Collectors.toSet());
+    }
+
+    /**
+     * Преобразует набор друзей (Set<User>) в набор идентификаторов (Set<Long>).
+     *
+     * @param friends набор друзей
+     * @return набор идентификаторов друзей
+     */
+    @Named("mapFriends")
+    default Set<Long> mapFriends(final Set<User> friends) {
+        if (friends == null) {
+            return Collections.emptySet();
+        }
+        return friends.stream()
+                .map(User::getId)
                 .collect(Collectors.toSet());
     }
 }

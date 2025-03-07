@@ -6,8 +6,10 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
@@ -30,6 +32,8 @@ public class GenerateCSV {
         generateUsersCSV(resourcesPath + "users.csv");
         generateUserRolesCSV(resourcesPath + "user_roles.csv");
         generateUserInterestsCSV(resourcesPath + "user_interests.csv");
+        generatePostsCSV(resourcesPath + "posts.csv");
+        generateUserFriendsCSV(resourcesPath + "user_friends.csv");
 
         final long endTime = System.currentTimeMillis();
         System.out.println("Генерация данных завершена.");
@@ -138,6 +142,115 @@ public class GenerateCSV {
             uniqueInterest.clear();
             writer.flush(); // Принудительно сбрасываю буфер перед закрытием
             System.out.println("user_interests.csv успешно создан.");
+        } catch (final IOException e) {
+            System.err.println("Ошибка при записи в файл: " + e.getMessage());
+        }
+    }
+
+    private static void generatePostsCSV(final String filename) {
+        System.out.println("Генерация posts.csv...");
+        final File file = new File(filename);
+        createDirectoryIfNotExists(file);
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file), BUFFER_SIZE)) {
+            final Faker faker = new Faker();
+            final Random random = new Random();
+            final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+            int totalPosts = 0; // Счетчик общего количества постов
+
+            for (int userId = 1; userId <= NUM_RECORDS; userId++) {
+                int numPosts = random.nextInt(6) + 5; // От 5 до 10 постов
+
+                for (int i = 0; i < numPosts; i++) {
+                    final String content = faker.lorem().sentence(random.nextInt(10) + 1); // Длина поста до 10 символов
+                    final LocalDateTime createdAt = LocalDateTime.now().minusDays(random.nextInt(365)); // Дата создания в пределах года
+                    final String formattedCreatedAt = createdAt.format(formatter);
+
+                    final String record = String.format("%s,%s,%d%n",
+                            content, formattedCreatedAt, userId);
+
+                    writer.write(record);
+                    totalPosts++;
+                }
+
+                // Логирование прогресса
+                if (userId % 10_000 == 0) {
+                    System.out.printf("Обработано пользователей: %d, сгенерировано постов: %d%n", userId, totalPosts);
+                    writer.flush(); // Принудительно сбрасываем буфер
+                }
+            }
+
+            writer.flush(); // Принудительно сбрасываем буфер перед закрытием
+            System.out.println("posts.csv успешно создан. Всего постов: " + totalPosts);
+        } catch (final IOException e) {
+            System.err.println("Ошибка при записи в файл: " + e.getMessage());
+        }
+    }
+
+    private static void generateUserFriendsCSV(final String filename) {
+        System.out.println("Генерация user_friends.csv...");
+        final File file = new File(filename);
+        createDirectoryIfNotExists(file);
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file), BUFFER_SIZE)) {
+            final Random random = new Random();
+
+            // Создаем список всех возможных ID пользователей
+            final List<Integer> allUserIds = new ArrayList<>();
+            for (int i = 1; i <= NUM_RECORDS; i++) {
+                allUserIds.add(i);
+            }
+
+            // Перемешиваем список всех ID один раз
+            Collections.shuffle(allUserIds, random);
+
+            int totalFriendships = 0; // Счетчик общего количества дружеских связей
+
+            // Используем StringBuilder для накопления строк
+            final StringBuilder buffer = new StringBuilder();
+
+            for (int userId = 1; userId <= NUM_RECORDS; userId++) {
+                int numFriends = random.nextInt(301) + 200; // От 200 до 500 друзей
+
+                // Выбираем друзей из перемешанного списка, исключая текущего пользователя
+                int friendIndex = 0;
+                int friendsAdded = 0;
+
+                while (friendsAdded < numFriends) {
+                    int friendId = allUserIds.get(friendIndex);
+
+                    // Исключаем текущего пользователя
+                    if (friendId != userId) {
+                        buffer.append(String.format("%d,%d%n", userId, friendId));
+                        totalFriendships++;
+                        friendsAdded++;
+                    }
+
+                    friendIndex++;
+
+                    // Если дошли до конца списка, начинаем с начала
+                    if (friendIndex >= allUserIds.size()) {
+                        friendIndex = 0;
+                    }
+                }
+
+                // Логирование прогресса и запись в файл
+                if (userId % 10_000 == 0) {
+                    writer.write(buffer.toString()); // Записываем накопленные данные
+                    buffer.setLength(0); // Очищаем буфер
+                    System.out.printf("Обработано пользователей: %d, сгенерировано дружеских связей: %d%n", userId, totalFriendships);
+                    writer.flush(); // Принудительно сбрасываем буфер
+                }
+            }
+
+            // Записываем оставшиеся данные
+            if (buffer.length() > 0) {
+                writer.write(buffer.toString());
+            }
+
+            writer.flush(); // Принудительно сбрасываем буфер перед закрытием
+            System.out.println("user_friends.csv успешно создан. Всего дружеских связей: " + totalFriendships);
         } catch (final IOException e) {
             System.err.println("Ошибка при записи в файл: " + e.getMessage());
         }

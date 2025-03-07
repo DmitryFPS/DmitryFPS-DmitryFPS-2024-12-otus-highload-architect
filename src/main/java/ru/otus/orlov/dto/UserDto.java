@@ -49,4 +49,7 @@ public class UserDto {
 
     /** Статус активности пользователя */
     private Boolean isActive;
+
+    /** Идентификаторы друзей */
+    private Set<Long> friendIds;
 }
